@@ -1,69 +1,38 @@
 const pageConfig = {
-  // Title for your status page
-  title: "Southcatsm's 系统状态",
-  // Links shown at the header of your status page, could set `highlight` to `true`
+  // 状态页面的标题，类似于HTML里面的<title></title>
+  title: "Southcatsm博客 系统状态",
+  // 状态页面右上角的按钮，按顺序从左往右在页面上排列
   links: [
-    { link: 'https://github.com/southcatsm', label: 'GitHub' },
-    { link: 'https://southcat.cc', label: 'Blog' },
-    { link: 'mailto:archie26@qq.com', label: 'Email Me', highlight: true },
+	  // 这个是普通按钮
+	  { link: 'https://github.com/southcatsm', label: 'Github'},
+	  // 这个是显示成蓝色按钮的高光按钮
+	  { link: 'https://southcat.cc', label: 'Blog', highlight: true },
   ],
-  // [OPTIONAL] Group your monitors
-  // If not specified, all monitors will be shown in a single list
-  // If specified, monitors will be grouped and ordered, not-listed monitors will be invisble (but still monitored)
-  group: {
-    "🌐 Public (example group name)": ['foo_monitor', 'bar_monitor', 'more monitor ids...'],
-    "🔐 Private": ['test_tcp_monitor'],
-  },
 }
 
 const workerConfig = {
-  // Write KV at most every 3 minutes unless the status changed
+  // Write KV at most every 3 minutes unless the status changed.
   kvWriteCooldownMinutes: 3,
-  // Enable HTTP Basic auth for status page & API by uncommenting the line below, format `<USERNAME>:<PASSWORD>`
-  // passwordProtection: 'username:password',
   // Define all your monitors here
   monitors: [
+    // ==========[服务监控]==========
+    // 这是一个例子，用于监控一个网页
+    // 如果是端口监控，可以参照原作者的Wiki
     {
-          id: 'weblog',
-          name: '主站',
-          method: 'POST',
-          target: 'https://southcat.cc',
-          tooltip: 'southcatsm主站',
-          statusPageLink: 'https://southcat.cc',
-          expectedCodes: [200],
-          timeout: 10000,
-          headers: {
-            'User-Agent': 'Uptimeflare 114514',
-          },
+	    // id必须唯一，使用英文和下划线
+      id: 'scsm_mainmoni',
+      // 监控页面展示的监控名称
+      name: 'Southcatsm 博客主站',
+      // 请求形式，HTTP请求一般用GET和POST，分不清就用GET
+      method: 'GET',
+      // 你监控的网站的地址
+      target: 'https://southcat.cc',
+      // 监控页面悬浮提示
+      tooltip: 'Southcatsm 博客客',
+      // 监控页面点击监控跳转链接
+      statusPageLink: 'https://southcat.cc/',
     },
-	{
-	      id: 'weblog2',
-	      name: 'Beta测试站',
-	      method: 'POST',
-	      target: 'https://demo3.southcat.cc',
-	      tooltip: 'southcatsm预先测试站',
-	      statusPageLink: 'https://demo3.southcat.cc',
-	      expectedCodes: [200],
-	      timeout: 10000,
-	      headers: {
-	        'User-Agent': 'Uptimeflare 114514',
-	      },
-	},
   ],
-  notification: {
-    // [Optional] apprise API server URL
-    // if not specified, no notification will be sent
-    appriseApiServer: "https://apprise.example.com/notify",
-    // [Optional] recipient URL for apprise, refer to https://github.com/caronc/apprise
-    // if not specified, no notification will be sent
-    recipientUrl: "tgram://bottoken/ChatID",
-    // [Optional] timezone used in notification messages, default to "Etc/GMT"
-    timeZone: "Asia/Shanghai",
-    // [Optional] grace period in minutes before sending a notification
-    // notification will be sent only if the monitor is down for N continuous checks after the initial failure
-    // if not specified, notification will be sent immediately
-    gracePeriod: 5,
-  },
   callbacks: {
     onStatusChange: async (
       env: any,
